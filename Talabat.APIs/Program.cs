@@ -1,9 +1,12 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Talabat.APIs.DTOs;
+using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
+using Talabat.APIs.MiddleWears;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories;
 using Talabat.Repository;
@@ -29,6 +32,24 @@ namespace Talabat.APIs
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddSingleton<ProductPictureUrlResolver>();
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .SelectMany( e => e.Value.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    var ValidationErrorResponse = new ApiValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(ValidationErrorResponse);
+                };
+            });
             #endregion
 
             var app = builder.Build();
@@ -54,6 +75,7 @@ namespace Talabat.APIs
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseMiddleware<ExceptionMiddleWare>();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

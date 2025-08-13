@@ -26,10 +26,10 @@ namespace Talabat.Repository
         public async Task<T> GetByIdAsync(ISpecification<T> Spec)
         {
             var OUTPUT = await ApplySpecification(Spec).FirstOrDefaultAsync();
-            if(OUTPUT is null)
-            {
-                throw new KeyNotFoundException($"Entity of type {typeof(T).Name} not found with the provided specification.");
-            }
+            //if(OUTPUT is null)
+            //{
+            //    throw new KeyNotFoundException($"Entity of type {typeof(T).Name} not found with the provided specification.");
+            //}
             return OUTPUT;
         }
 
