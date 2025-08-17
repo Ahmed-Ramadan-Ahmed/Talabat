@@ -21,6 +21,14 @@ namespace Talabat.Repository
             {
                 inputQuery = inputQuery.Include(include);
             }
+            if (specification.OrderBy is not null)
+            {
+                inputQuery = inputQuery.OrderBy(specification.OrderBy);
+            }
+            if (specification.OrderByDescending is not null)
+            {
+                inputQuery = inputQuery.OrderByDescending(specification.OrderByDescending);
+            }
             return inputQuery;
         }
     }

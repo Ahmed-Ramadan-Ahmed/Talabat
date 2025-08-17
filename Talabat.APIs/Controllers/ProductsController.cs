@@ -25,17 +25,17 @@ namespace Talabat.APIs.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProductToReturnDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(string? sort)
         {
-            ISpecification<Product> spec = new ProductWithBrandAndTypeSpecifications();
+            ISpecification<Product> spec = new ProductWithBrandAndTypeSpecifications(sort);
             var products = await _productRepo.GetAllAsync(spec);
             if (products is null || !products.Any())
             {
                 return NotFound(new ApiResponse(404, "No products found"));
             }
-            var MappedProducts = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products);
+            var MappedProducts = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
             return Ok(MappedProducts);
         }
 
@@ -65,9 +65,9 @@ namespace Talabat.APIs.Controllers
 
 
         [HttpGet("Types")]
-        [ProducesResponseType(typeof(IEnumerable<ProductType>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<ProductType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductType>>> GetTypes()
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes()
         {
             var spec = new BaseSpecifications<ProductType>();
             var types = await _typeRepo.GetAllAsync(spec);
@@ -79,9 +79,9 @@ namespace Talabat.APIs.Controllers
         }
 
         [HttpGet("Brands")]
-        [ProducesResponseType(typeof(IEnumerable<ProductBrand>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<ProductBrand>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
         {
             var spec = new BaseSpecifications<ProductBrand>();
             var brands = await _brandRepo.GetAllAsync(spec);

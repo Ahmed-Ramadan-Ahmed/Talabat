@@ -18,19 +18,15 @@ namespace Talabat.Repository
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        public async Task<IEnumerable<T>> GetAllAsync(ISpecification<T> Spec)
+        public async Task<IReadOnlyList<T>> GetAllAsync(ISpecification<T> Spec)
         {
             return await ApplySpecification(Spec).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(ISpecification<T> Spec)
         {
-            var OUTPUT = await ApplySpecification(Spec).FirstOrDefaultAsync();
-            //if(OUTPUT is null)
-            //{
-            //    throw new KeyNotFoundException($"Entity of type {typeof(T).Name} not found with the provided specification.");
-            //}
-            return OUTPUT;
+            var output = await ApplySpecification(Spec).FirstOrDefaultAsync();
+            return output;
         }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> Spec)

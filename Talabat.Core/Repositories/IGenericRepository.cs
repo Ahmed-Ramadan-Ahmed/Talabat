@@ -12,7 +12,7 @@ namespace Talabat.Core.Repositories
     {
         //Task<IEnumerable<T>> GetAllAsync();
         //Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync(ISpecification<T> Spec);
+        Task<IReadOnlyList<T>> GetAllAsync(ISpecification<T> Spec);
         Task<T> GetByIdAsync(ISpecification<T> Spec);
     }
 }
