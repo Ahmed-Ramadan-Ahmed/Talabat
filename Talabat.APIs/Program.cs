@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extensions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.MiddleWears;
 using Talabat.Core.Entities;
@@ -29,27 +30,7 @@ namespace Talabat.APIs
             builder.Services.AddDbContext<Talabat.Repository.Data.StoreContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
-            builder.Services.AddSingleton<ProductPictureUrlResolver>();
-            builder.Services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = context =>
-                {
-                    var errors = context.ModelState
-                        .Where(e => e.Value.Errors.Count > 0)
-                        .SelectMany( e => e.Value.Errors)
-                        .Select(e => e.ErrorMessage)
-                        .ToList();
-
-                    var ValidationErrorResponse = new ApiValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-
-                    return new BadRequestObjectResult(ValidationErrorResponse);
-                };
-            });
+            builder.Services.AddAplicationServices();
             #endregion
 
             var app = builder.Build();
