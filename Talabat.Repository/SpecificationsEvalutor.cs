@@ -29,6 +29,10 @@ namespace Talabat.Repository
             {
                 inputQuery = inputQuery.OrderByDescending(specification.OrderByDescending);
             }
+            if (specification.IsPagingEnabled)
+            {
+                inputQuery = inputQuery.Skip(specification.Skip).Take(specification.Take);
+            }
             return inputQuery;
         }
     }
