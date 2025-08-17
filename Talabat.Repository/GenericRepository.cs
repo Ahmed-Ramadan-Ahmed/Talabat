@@ -28,7 +28,10 @@ namespace Talabat.Repository
             var output = await ApplySpecification(Spec).FirstOrDefaultAsync();
             return output;
         }
-
+        public async Task<int> TotalCountAsync(ISpecification<T> Spec)
+        {
+            return await ApplySpecification(Spec).CountAsync();
+        }
         private IQueryable<T> ApplySpecification(ISpecification<T> Spec)
         {
             return SpecificationsEvalutor<T>.GetQuery(_dbContext.Set<T>(), Spec);

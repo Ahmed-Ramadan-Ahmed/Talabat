@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories;
 using Talabat.Core.Specifications;
@@ -27,7 +28,7 @@ namespace Talabat.APIs.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams productsSpecParams)
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams productsSpecParams)
         {
             ISpecification<Product> spec = new ProductWithBrandAndTypeSpecifications(productsSpecParams);
             var products = await _productRepo.GetAllAsync(spec);
@@ -36,7 +37,17 @@ namespace Talabat.APIs.Controllers
                 return NotFound(new ApiResponse(404, "No products found"));
             }
             var MappedProducts = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
-            return Ok(MappedProducts);
+
+
+            var totalCount = await _productRepo.TotalCountAsync(new ProductWithFiltrationForCountAsync(productsSpecParams)); 
+            var Result = new Pagination<ProductToReturnDto>()
+            {
+                Count = totalCount,
+                PageIndex = productsSpecParams.PageIndex,
+                PageSize = productsSpecParams.PageSize,
+                Data = MappedProducts
+            };
+            return Ok(Result);
         }
 
         [HttpGet("{id}")]

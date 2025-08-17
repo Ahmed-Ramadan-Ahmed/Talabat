@@ -30,6 +30,5 @@ namespace Talabat.Core.Specifications
             BrandId = brandId;
             TypeId = typeId;
         }
-
     }
 }
