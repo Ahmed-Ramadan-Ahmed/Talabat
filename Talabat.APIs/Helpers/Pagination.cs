@@ -8,10 +8,7 @@
         public int CurrentPageCount => Data?.Count ?? 0;
         public int TotalPages => (int)Math.Ceiling((double)Count / PageSize);
         public IReadOnlyList<T> Data { get; set; }
-        public Pagination()
-        {
-            
-        }
+        public Pagination() { }
         public Pagination(int pageIndex, int pageSize, int count, IReadOnlyList<T> data)
         {
             PageIndex = pageIndex;

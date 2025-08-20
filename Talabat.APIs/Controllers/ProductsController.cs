@@ -38,7 +38,6 @@ namespace Talabat.APIs.Controllers
             }
             var MappedProducts = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
 
-
             var totalCount = await _productRepo.TotalCountAsync(new ProductWithFiltrationForCountAsync(productsSpecParams)); 
             var Result = new Pagination<ProductToReturnDto>()
             {
@@ -78,29 +77,44 @@ namespace Talabat.APIs.Controllers
         [HttpGet("Types")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductType>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes()
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes([FromQuery] BrandOrTypeSpecParams specParams)
         {
-            var spec = new BaseSpecifications<ProductType>();
+            var spec = new TypePaginationSpecification<ProductType>(specParams);
             var types = await _typeRepo.GetAllAsync(spec);
             if (types is null || !types.Any())
             {
                 return NotFound(new ApiResponse(404));
             }
-            return Ok(types);
+            var result = new Pagination<ProductType>()
+            {
+                Count = await _typeRepo.TotalCountAsync(new BaseSpecifications<ProductType>()),
+                PageIndex = specParams.PageIndex,
+                PageSize = specParams.PageSize,
+                Data = types
+            };
+            return Ok(result);
         }
 
         [HttpGet("Brands")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductBrand>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands([FromQuery] BrandOrTypeSpecParams specParams)
         {
-            var spec = new BaseSpecifications<ProductBrand>();
+            var spec = new BrandPaginationSpecification<ProductBrand>(specParams);
             var brands = await _brandRepo.GetAllAsync(spec);
             if (brands is null || !brands.Any())
             {
                 return NotFound(new ApiResponse(404));
             }
-            return Ok(brands);
+
+            var result = new Pagination<ProductBrand>()
+            {
+                Count = await _brandRepo.TotalCountAsync(new BaseSpecifications<ProductBrand>()),
+                PageIndex = specParams.PageIndex,
+                PageSize = specParams.PageSize,
+                Data = brands
+            };
+            return Ok(result);
         }
     }
 }
