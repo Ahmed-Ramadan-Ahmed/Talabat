@@ -87,7 +87,7 @@ namespace Talabat.APIs.Controllers
             }
             var result = new Pagination<ProductType>()
             {
-                Count = await _typeRepo.TotalCountAsync(new BaseSpecifications<ProductType>()),
+                Count = await _typeRepo.TotalCountAsync(new BaseSpecifications<ProductType>(e => (specParams.Search == null) || (e.Name.ToLower().Contains(specParams.Search.ToLower())))),
                 PageIndex = specParams.PageIndex,
                 PageSize = specParams.PageSize,
                 Data = types
@@ -109,7 +109,7 @@ namespace Talabat.APIs.Controllers
 
             var result = new Pagination<ProductBrand>()
             {
-                Count = await _brandRepo.TotalCountAsync(new BaseSpecifications<ProductBrand>()),
+                Count = await _brandRepo.TotalCountAsync(new BaseSpecifications<ProductBrand>(e => (specParams.Search == null) || (e.Name.ToLower().Contains(specParams.Search.ToLower())))),
                 PageIndex = specParams.PageIndex,
                 PageSize = specParams.PageSize,
                 Data = brands

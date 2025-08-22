@@ -12,17 +12,19 @@ namespace Talabat.Core.Specifications
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; }
         public bool SortByName { get; set; }
+        public string ? Search { get; set; }
         public BrandOrTypeSpecParams()
         {
             PageIndex = 1;
             PageSize = 10;
             SortByName = false;
         }
-        public BrandOrTypeSpecParams(int? _pageIndex, int? _pageSize, bool? _sortByName)
+        public BrandOrTypeSpecParams(int? _pageIndex, int? _pageSize, bool? _sortByName, string? search)
         {
             PageIndex = _pageIndex.HasValue ? _pageIndex.Value : 1;
-            PageSize = _pageSize.HasValue && _pageSize.Value <10 ? _pageSize.Value : 10;
+            PageSize = _pageSize.HasValue && _pageSize.Value < 10 ? _pageSize.Value : 10;
             SortByName = _sortByName.HasValue ? _sortByName.Value : false;
+            Search = search;
         }
     }
 }

@@ -9,7 +9,8 @@ namespace Talabat.Core.Specifications
 {
     public class BrandPaginationSpecification<T> : BaseSpecifications<T> where T : ProductBrand
     {
-        public BrandPaginationSpecification(BrandOrTypeSpecParams specParams) : base()
+        public BrandPaginationSpecification(BrandOrTypeSpecParams specParams) : 
+            base(e => (specParams.Search == null) || (e.Name.ToLower().Contains(specParams.Search.ToLower())))
         {
             if (specParams.SortByName && specParams.SortByName)
             {

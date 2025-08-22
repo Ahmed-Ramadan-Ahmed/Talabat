@@ -13,6 +13,7 @@ namespace Talabat.APIs.Extensions
             Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             Services.AddSingleton<ProductPictureUrlResolver>();
+            Services.AddScoped<IBasketRepository, BasketRepository>();
             Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>

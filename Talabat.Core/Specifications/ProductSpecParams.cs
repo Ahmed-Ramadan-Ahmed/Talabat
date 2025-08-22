@@ -8,6 +8,7 @@ namespace Talabat.Core.Specifications
 {
     public class ProductSpecParams
     {
+        
         public string? Sort { get; set; }
         public int? BrandId { get; set; }
         public int? TypeId { get; set; }
@@ -18,6 +19,12 @@ namespace Talabat.Core.Specifications
         {
             get => pageSize;
             set => pageSize = (value <= 10) ? value : 10;
+        }
+        private string? search;
+        public string? Search
+        {
+            get => search;
+            set => search = value?.ToLower();
         }
         public ProductSpecParams()
         {
