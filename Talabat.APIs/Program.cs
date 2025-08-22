@@ -13,6 +13,7 @@ using Talabat.Core.Entities;
 using Talabat.Core.Repositories;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs
 {
@@ -37,6 +38,11 @@ namespace Talabat.APIs
                 var configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("RedisConnection"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
+
+            builder.Services.AddDbContext<AppIdentityDbContext>(Options =>
+            {
+                Options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
             #endregion
 
             var app = builder.Build();
@@ -48,6 +54,10 @@ namespace Talabat.APIs
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<StoreContext>();
                     await dbContext.Database.MigrateAsync();
+
+                    var IdentityDbContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+                    await IdentityDbContext.Database.MigrateAsync();
+
                     await StoreContextSeeding.SeedAsync(dbContext);
                 }
                 catch (Exception ex)
