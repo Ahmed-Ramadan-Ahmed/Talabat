@@ -7,7 +7,6 @@
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedOn { get; set; }
-        // Constructor
         public CustomerBasket()
         {
             Id = Guid.NewGuid().ToString();

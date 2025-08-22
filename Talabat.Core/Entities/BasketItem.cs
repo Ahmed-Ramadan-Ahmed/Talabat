@@ -15,8 +15,6 @@ namespace Talabat.Core.Entities
         public int Quantity { get; set; }
         public int ProductId { get; set; }
         public string BasketId { get; set; }
-
-        public virtual CustomerBasket basket { get; set; }
         public BasketItem()
         {
             Quantity = 1;
