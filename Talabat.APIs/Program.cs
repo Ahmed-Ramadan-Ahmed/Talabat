@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -10,6 +11,7 @@ using Talabat.APIs.Extensions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.MiddleWears;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories;
 using Talabat.Repository;
 using Talabat.Repository.Data;
@@ -45,6 +47,8 @@ namespace Talabat.APIs
             });
             #endregion
 
+            builder.Services.AddIdentityServices();
+
             var app = builder.Build();
 
             #region Database Migration
@@ -57,6 +61,9 @@ namespace Talabat.APIs
 
                     var IdentityDbContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
                     await IdentityDbContext.Database.MigrateAsync();
+
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                    await IdentityDbSeeding.SeedUserAsync(userManager);
 
                     await StoreContextSeeding.SeedAsync(dbContext);
                 }
@@ -71,7 +78,7 @@ namespace Talabat.APIs
             #region Configure the HTTP request pipeline.
 
             if (app.Environment.IsDevelopment())
-            {
+            { 
                 app.UseMiddleware<ExceptionMiddleWare>();
                 app.UseSwagger();
                 app.UseSwaggerUI();
