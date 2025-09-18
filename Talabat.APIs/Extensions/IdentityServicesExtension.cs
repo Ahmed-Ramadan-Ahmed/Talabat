@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.Services;
 using Talabat.Repository.Identity;
+using Talabat.Services;
 
 namespace Talabat.APIs.Extensions
 {
@@ -16,10 +20,12 @@ namespace Talabat.APIs.Extensions
             //    options.Password.RequireUppercase = false;
             //});
 
+            
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>();
-
-            services.AddAuthentication();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer();
 
             return services;
         }

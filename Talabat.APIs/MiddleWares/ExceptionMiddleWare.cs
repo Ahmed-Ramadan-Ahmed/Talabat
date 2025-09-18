@@ -32,7 +32,6 @@ namespace Talabat.APIs.MiddleWears
                     Details = _env.IsDevelopment() ? ex.StackTrace : null
                 };
 
-
                 await context.Response.WriteAsJsonAsync(response);
             }
         } 

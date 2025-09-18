@@ -16,7 +16,7 @@ namespace Talabat.Repository.Identity
             {
                 var user = new AppUser
                 {
-                    DisplayName = "Ahmed Ramadan",
+                    DisplayName = "ADMIN Ahmed Ramadan",
                     Email = "Ara@gmail.com",
                     UserName = "AhmedRamadan",
                     PhoneNumber = "01552372197"
