@@ -14,7 +14,5 @@ namespace Talabat.Repository.Identity
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {
         }
-        
-
     }
 }
